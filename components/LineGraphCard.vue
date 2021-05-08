@@ -41,14 +41,14 @@ export default {
         datasets: [
           {
             data: this.lines.map((line) => line[1]),
-            label: 'Luftfeuchte',
+            label: 'Luftfeuchte in %',
             borderColor: 'black',
             fill: false,
             pointRadius: 1,
           },
           {
             data: this.lines.map((line) => line[2]),
-            label: 'Temperatur',
+            label: 'Temperatur in °C',
             borderColor: 'black',
             borderDash: [10, 5],
             fill: false,

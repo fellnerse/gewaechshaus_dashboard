@@ -153,7 +153,7 @@ export default {
           .collection('datapoints/esp1/data')
           .orderBy('date', 'desc')
           .endBefore(date.load)
-          .limit(2000)
+          .limit(3000)
           .get()
           .then((snapshot) => {
             snapshot.docs.reverse().forEach((doc) => {

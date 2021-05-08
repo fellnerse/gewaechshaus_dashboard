@@ -40,9 +40,16 @@ export default {
             xAxes: [
               {
                 type: 'time',
-                distribution: 'series',
+                // distribution: 'series',
                 time: {
                   unit: this.timeunit,
+                  tooltipFormat: 'HH:mm DD.MM',
+                  displayFormats: {
+                    millisecond: 'HH:mm:ss.SSS',
+                    second: 'HH:mm:ss',
+                    minute: 'HH:mm',
+                    hour: 'HH[h]',
+                  },
                 },
                 gridLines: {
                   display: false,
