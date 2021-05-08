@@ -55,7 +55,7 @@
 export default {
   data() {
     return {
-      initialLoading: false,
+      initialLoading: true,
       datapoints: {},
       hourlyData: [],
       updateInterval: 300000,
@@ -70,7 +70,6 @@ export default {
       hour: localStorage.getObject('hour') || [],
       day: localStorage.getObject('day') || [],
     }
-    console.log(this.datapoints)
 
     this.datapoints.hour.map((a) => {
       a[0] = new Date(a[0])
@@ -82,7 +81,7 @@ export default {
     })
     this.datapoints.hour.reverse().reverse()
     this.datapoints.day.reverse().reverse()
-    console.log('mounted', this.datapoints)
+
     // this.updating = false
     // this.initialLoading = false
     this.getData()
@@ -147,7 +146,7 @@ export default {
     },
     getData() {
       const dates = this.getStartDates()
-      console.log('dates', dates)
+      this.updating = true
       for (const [name, date] of Object.entries(dates)) {
         this.$fire.firestore
           .collection('datapoints/esp1/data')
@@ -160,9 +159,9 @@ export default {
               const data = doc.data()
               this.addDatapoint(data, name)
             })
-            console.log('loaded num docs', name, snapshot.docs.length)
             this.filterDatapoints(name, date.start)
-            // this.initialLoading = false
+            this.initialLoading = false
+            this.updating = false
           })
       }
     },
