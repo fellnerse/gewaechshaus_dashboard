@@ -108,6 +108,8 @@ export default {
       dates.day = {
         start: dayStart,
         load: this.biggerDate(dayStart, dayLoad),
+        minuteRestriction: (query) =>
+          query.where('minute', 'in', [0, 15, 30, 45]),
       }
 
       const hourStart = new Date(new Date() - 3600 * 1000)
@@ -116,10 +118,8 @@ export default {
       dates.hour = {
         start: hourStart,
         load: this.biggerDate(hourStart, hourLoad),
+        minuteRestriction: (_) => _,
       }
-      // const oneDayAgo = new Date()
-      // go two hours into future (as current data has an issue with this)
-      // oneDayAgo.setTime(oneDayAgo.getTime() + 2 * 3600 * 1000 - 6 * 30 * 1000)
       return dates
     },
     addDatapoint(datapoint, key) {
@@ -127,6 +127,7 @@ export default {
         datapoint.date.toDate(),
         datapoint.humidity,
         datapoint.temperature,
+        datapoint.light,
       ]
       this.datapoints[key].push(constructedArr)
     },
@@ -138,7 +139,6 @@ export default {
 
       localStorage.setObject(key, this.datapoints[key])
 
-      console.log(key + '_date', this.datapoints[key].slice(-1)[0][0])
       localStorage.setObject(
         key + '_date',
         this.datapoints[key].slice(-1)[0][0]
@@ -148,10 +148,14 @@ export default {
       const dates = this.getStartDates()
       this.updating = true
       for (const [name, date] of Object.entries(dates)) {
-        this.$fire.firestore
-          .collection('datapoints/esp1/data')
+        let query = this.$fire.firestore
+          .collection('datapoints/esp0/data')
           .orderBy('date', 'desc')
           .endBefore(date.load)
+
+        query = date.minuteRestriction(query)
+
+        query
           .limit(3000)
           .get()
           .then((snapshot) => {
@@ -159,6 +163,7 @@ export default {
               const data = doc.data()
               this.addDatapoint(data, name)
             })
+            console.log('added: ' + snapshot.docs.length)
             this.filterDatapoints(name, date.start)
             this.initialLoading = false
             this.updating = false

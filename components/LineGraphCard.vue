@@ -54,6 +54,14 @@ export default {
             fill: false,
             pointRadius: 1,
           },
+          {
+            data: this.lines.map((line) => line[3]),
+            label: 'Light in 💡',
+            borderColor: 'black',
+            borderDash: [5, 5],
+            fill: false,
+            pointRadius: 1,
+          },
         ],
       }
     },
