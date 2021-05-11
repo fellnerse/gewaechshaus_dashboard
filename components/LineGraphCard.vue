@@ -37,17 +37,17 @@ export default {
   watch: {
     lines: function a() {
       this.chartData = {
-        labels: this.lines.map((line) => line[0]),
+        labels: this.lines.map((line) => line.date),
         datasets: [
           {
-            data: this.lines.map((line) => line[1]),
+            data: this.lines.map((line) => line.humidity),
             label: 'Luftfeuchte in %',
             borderColor: 'black',
             fill: false,
             pointRadius: 1,
           },
           {
-            data: this.lines.map((line) => line[2]),
+            data: this.lines.map((line) => line.temperature),
             label: 'Temperatur in °C',
             borderColor: 'black',
             borderDash: [10, 5],
@@ -55,7 +55,7 @@ export default {
             pointRadius: 1,
           },
           {
-            data: this.lines.map((line) => line[3]),
+            data: this.lines.map((line) => line.light),
             label: 'Light in 💡',
             borderColor: 'black',
             borderDash: [5, 5],

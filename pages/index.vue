@@ -40,10 +40,11 @@
         <v-col v-for="(line, idx) in datapoints.hour" :key="idx">
           <v-card>
             <div class="text-h5">
-              {{ line[0] }}
+              {{ line.date }}
             </div>
-            <div class="text-body2">{{ line[1].toFixed(2) }}%</div>
-            <div class="text-body2">{{ line[2].toFixed(2) }}°C</div>
+            <div class="text-body2">{{ line.humidity.toFixed(2) }}%</div>
+            <div class="text-body2">{{ line.temperature.toFixed(2) }}°C</div>
+            <div class="text-body2">{{ line.light.toFixed(2) }}°C</div>
           </v-card>
         </v-col>
       </v-row>
@@ -72,11 +73,11 @@ export default {
     }
 
     this.datapoints.hour.map((a) => {
-      a[0] = new Date(a[0])
+      a.date = new Date(a.date)
       return a
     })
     this.datapoints.day.map((a) => {
-      a[0] = new Date(a[0])
+      a.date = new Date(a.date)
       return a
     })
     this.datapoints.hour.reverse().reverse()
@@ -123,25 +124,20 @@ export default {
       return dates
     },
     addDatapoint(datapoint, key) {
-      const constructedArr = [
-        datapoint.date.toDate(),
-        datapoint.humidity,
-        datapoint.temperature,
-        datapoint.light,
-      ]
-      this.datapoints[key].push(constructedArr)
+      datapoint.date = datapoint.date.toDate()
+      this.datapoints[key].push(datapoint)
     },
 
     filterDatapoints(key, startDate) {
       this.datapoints[key] = this.datapoints[key].filter((data) => {
-        return data[0] > startDate
+        return data.date > startDate
       })
 
       localStorage.setObject(key, this.datapoints[key])
 
       localStorage.setObject(
         key + '_date',
-        this.datapoints[key].slice(-1)[0][0]
+        this.datapoints[key].slice(-1)[0].date
       )
     },
     getData() {
