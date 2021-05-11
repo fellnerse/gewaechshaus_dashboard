@@ -190,10 +190,10 @@ export default {
               this.espHostname + ' added ' + name + ': ' + snapshot.docs.length
             )
             this.filterDatapoints(name, date.start)
-            this.initialLoading = false
-            this.updating = false
           })
       }
+      this.initialLoading = false
+      this.updating = false
 
       localStorage.setObject(
         this.espHostname,
