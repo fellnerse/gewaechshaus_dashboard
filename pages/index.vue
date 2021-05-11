@@ -189,7 +189,7 @@ export default {
             console.log(
               this.espHostname + ' added ' + name + ': ' + snapshot.docs.length
             )
-            this.filterDatapoints(name, date.start)
+            if (snapshot.docs.length) this.filterDatapoints(name, date.start)
           })
       }
       this.initialLoading = false
