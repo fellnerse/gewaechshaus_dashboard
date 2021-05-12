@@ -23,7 +23,6 @@ function loadESPData(hostname = 'esp0') {
 }
 
 function setESPData(datapoints, hostname) {
-  console.log('set esp data', hostname, JSON.stringify(datapoints))
   localStorage.setObject(hostname, datapoints)
 }
 
