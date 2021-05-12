@@ -11,8 +11,10 @@
         >
         </v-select>
       </v-col>
-      <v-col cols="auto" class="pt-0" @click="getData">
-        <v-btn elevation="0"><v-icon>mdi-reload</v-icon></v-btn>
+      <v-col cols="auto" class="pt-0">
+        <v-btn elevation="0" :disabled="updating" @click="getDataWrapper"
+          ><v-icon>mdi-reload</v-icon></v-btn
+        >
       </v-col>
       <v-spacer></v-spacer>
     </v-row>
@@ -38,130 +40,33 @@ export default {
   },
 
   async mounted() {
-    await this.loadHostnames()
-    this.setupLocalStorage()
+    this.hostnames = await this.$utils.getHostnamesFromFirebase()
 
     for (const hostname of this.hostnames) {
-      this.datapoints[hostname] = localStorage.getObject(hostname) || {
-        day: [],
-        hour: [],
-      }
-      this.rehydrateDates(this.datapoints[hostname])
+      this.datapoints[hostname] = this.$localStorage.loadESPData(hostname)
     }
-    this.espHostname = localStorage.getItem('esp-select') || this.espHostname
-    this.getData()
+    this.espHostname = this.$localStorage.getESPSelect()
+    this.getDataWrapper()
   },
 
   methods: {
-    async loadHostnames() {
-      await this.$fire.firestore
-        .collection('/datapoints')
-        .get()
-        .then((snapshot) =>
-          snapshot.forEach((snap) => this.hostnames.push(snap.id))
-        )
-    },
-    rehydrateDates(storedDict) {
-      storedDict.hour.map((a) => {
-        a.date = new Date(a.date)
-        return a
-      })
-      storedDict.day.map((a) => {
-        a.date = new Date(a.date)
-        return a
-      })
-    },
-    setupLocalStorage() {
-      Storage.prototype.setObject = function (key, value) {
-        this.setItem(key, JSON.stringify(value))
-      }
-
-      Storage.prototype.getObject = function (key) {
-        const value = this.getItem(key)
-        return value && JSON.parse(value)
-      }
-    },
-    biggerDate(a, b) {
-      return a > b ? a : b
-    },
-    getStartDates() {
-      const dates = {}
-      const dayStart = new Date(new Date() - 24 * 3600 * 1000)
-      const dayLoad = new Date(
-        localStorage.getObject(this.espHostname + '_day_date') || 0
-      )
-      dates.day = {
-        start: dayStart,
-        load: this.biggerDate(dayStart, dayLoad),
-        minuteRestriction: (query) =>
-          query.where('minute', 'in', [0, 15, 30, 45]),
-      }
-
-      const hourStart = new Date(new Date() - 3600 * 1000)
-      const hourLoad = new Date(
-        localStorage.getObject(this.espHostname + '_hour_date') || 0
-      )
-
-      dates.hour = {
-        start: hourStart,
-        load: this.biggerDate(hourStart, hourLoad),
-        minuteRestriction: (_) => _,
-      }
-      return dates
-    },
-    addDatapoint(datapoint, key) {
-      datapoint.date = datapoint.date.toDate()
-
-      this.datapoints[datapoint.hostname][key].push(datapoint)
-    },
-
-    filterDatapoints(key, startDate) {
-      this.datapoints[this.espHostname][key] = this.datapoints[
-        this.espHostname
-      ][key].filter((data) => {
-        return data.date > startDate
-      })
-      localStorage.setObject(
-        this.espHostname + '_' + key + '_date',
-        this.datapoints[this.espHostname][key].slice(-1)[0].date
-      )
-    },
     switchEsp() {
-      localStorage.setItem('esp-select', this.espHostname)
-      this.getData()
+      this.$localStorage.setESPSelect(this.espHostname)
+      this.getDataWrapper()
     },
-    async getData() {
-      const dates = this.getStartDates()
+    getDataWrapper() {
+      if (this.updating) return
       this.updating = true
-      for (const [name, date] of Object.entries(dates)) {
-        let query = this.$fire.firestore
-          .collection('datapoints/' + this.espHostname + '/data')
-          .orderBy('date', 'desc')
-          .endBefore(date.load)
-
-        query = date.minuteRestriction(query)
-
-        await query
-          .limit(3000)
-          .get()
-          .then((snapshot) => {
-            snapshot.docs.reverse().forEach((doc) => {
-              const data = doc.data()
-              this.addDatapoint(data, name)
-            })
-            console.log(
-              this.espHostname + ' added ' + name + ': ' + snapshot.docs.length
-            )
-            if (snapshot.docs.length) this.filterDatapoints(name, date.start)
-          })
-      }
-      this.initialLoading = false
-      this.updating = false
-
-      localStorage.setObject(
-        this.espHostname,
-        this.datapoints[this.espHostname]
-      )
+      this.$utils
+        .getData({
+          dates: this.$utils.getStartDates(this.espHostname),
+          hostname: this.espHostname,
+          datapoints: this.datapoints[this.espHostname],
+        })
+        .then(() => {
+          this.initialLoading = false
+          this.updating = false
+        })
     },
   },
 }
