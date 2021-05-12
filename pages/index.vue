@@ -16,48 +16,11 @@
       </v-col>
       <v-spacer></v-spacer>
     </v-row>
-    <LineGraphCard
+    <Graphs
+      :datapoints="datapoints[espHostname]"
       :initial-loading="initialLoading"
-      :lines="datapoints[espHostname].hour"
       :updating="updating"
-      timeunit="minute"
-      title="Letze Stunde"
     />
-    <v-spacer />
-    <LineGraphCard
-      :initial-loading="initialLoading"
-      :lines="datapoints[espHostname].day"
-      :updating="updating"
-      timeunit="hour"
-      title="Letze 24h"
-    />
-    <v-spacer />
-    <v-spacer />
-    <v-container>
-      <v-row v-if="initialLoading">
-        <v-col v-for="a in 16" :key="a">
-          <v-skeleton-loader
-            v-if="initialLoading"
-            class="mx-auto"
-            max-height="100"
-            type="card"
-            width="150"
-          ></v-skeleton-loader>
-        </v-col>
-      </v-row>
-      <v-row v-else>
-        <v-col v-for="(line, idx) in datapoints.hour" :key="idx">
-          <v-card>
-            <div class="text-h5">
-              {{ line.date }}
-            </div>
-            <div class="text-body2">{{ line.humidity.toFixed(2) }}%</div>
-            <div class="text-body2">{{ line.temperature.toFixed(2) }}°C</div>
-            <div class="text-body2">{{ line.light.toFixed(2) }}°C</div>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
   </v-container>
 </template>
 
@@ -66,7 +29,7 @@ export default {
   data() {
     return {
       initialLoading: true,
-      datapoints: { esp0: [] },
+      datapoints: { esp0: {} },
       updateInterval: 300000,
       updating: false,
       espHostname: 'esp0',
