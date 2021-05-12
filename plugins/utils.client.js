@@ -30,6 +30,7 @@ function getData({ dates, hostname, datapoints }, { $fire, $localStorage }) {
       .collection('datapoints/' + hostname + '/data')
       .orderBy('date', 'desc')
       .endBefore(date.load)
+      .startAt(new Date())
 
     query = date.minuteRestriction(query)
 
