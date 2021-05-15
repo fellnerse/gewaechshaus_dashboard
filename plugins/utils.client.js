@@ -3,6 +3,16 @@ function biggerDate(a, b) {
 }
 function getStartDates(hostname, { $localStorage }) {
   const dates = {}
+
+  const weekStart = new Date(new Date() - 7 * 24 * 3600 * 1000)
+  const weekLoad = $localStorage.loadDate(hostname, 'week')
+
+  dates.week = {
+    start: weekStart,
+    load: biggerDate(weekStart, weekLoad),
+    minuteRestriction: (query) => query.where('minute', 'in', [0]),
+  }
+
   const dayStart = new Date(new Date() - 24 * 3600 * 1000)
   const dayLoad = $localStorage.loadDate(hostname, 'day')
 
@@ -20,6 +30,7 @@ function getStartDates(hostname, { $localStorage }) {
     load: biggerDate(hourStart, hourLoad),
     minuteRestriction: (_) => _,
   }
+
   return dates
 }
 
@@ -81,10 +92,25 @@ function getHostnamesFromFirebase({ $fire }) {
     )
 }
 
+function getHostnameFromFirebase(name, { $fire }) {
+  return $fire.firestore
+    .collection('/datapoints')
+    .doc(name)
+    .get()
+    .then((snapshot) => {
+      console.log(snapshot)
+      return {
+        text: snapshot.data().name,
+        value: snapshot.id,
+      }
+    })
+}
+
 export default function utilsClient(context, inject) {
   inject('utils', {
     getStartDates: (_) => getStartDates(_, context),
     getHostnamesFromFirebase: () => getHostnamesFromFirebase(context),
+    getHostnameFromFirebase: (_) => getHostnameFromFirebase(_, context),
     getData: (_) => getData(_, context),
   })
 }

@@ -10,6 +10,7 @@ function loadESPData(hostname = 'esp0') {
   const storedDict = localStorage.getObject(hostname) || {
     day: [],
     hour: [],
+    week: [],
   }
 
   // this makes sure we still have Date object
@@ -34,6 +35,10 @@ function getESPSelect() {
   return localStorage.getItem('esp-select') || 'esp0'
 }
 
+function deleteLocalStorage() {
+  localStorage.clear()
+}
+
 export default function _localStorage(context, inject) {
   Storage.prototype.setObject = function (key, value) {
     this.setItem(key, JSON.stringify(value))
@@ -51,5 +56,6 @@ export default function _localStorage(context, inject) {
     getESPSelect,
     setESPData,
     setDate,
+    deleteLocalStorage,
   })
 }

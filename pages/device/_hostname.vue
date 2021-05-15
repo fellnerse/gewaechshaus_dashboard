@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div v-if="device.text" class="text-h4 font-weight-bold text-center mb-2">
+      {{ device.text }}
+    </div>
+    <v-skeleton-loader v-else type="heading" class="mx-auto mb-2" width="400px">
+    </v-skeleton-loader>
     <Graphs
       :datapoints="datapoints"
       :initial-loading="initialLoading || !datapoints"
@@ -20,12 +25,15 @@ export default {
       initialLoading: true,
       datapoints: {},
       updating: false,
+      device: {},
     }
   },
 
   mounted() {
     this.datapoints = this.$localStorage.loadESPData(this.hostname)
-
+    this.$utils
+      .getHostnameFromFirebase(this.hostname)
+      .then((device) => (this.device = device))
     this.getDataWrapper()
   },
 

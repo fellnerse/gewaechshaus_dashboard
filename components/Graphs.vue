@@ -14,17 +14,16 @@
       :lines="datapoints.day"
       :updating="updating"
       timeunit="hour"
-      title="Letze 24h"
+      title="Letzter Tag"
       :class="{ kindle: small }"
     />
     <v-spacer />
     <LineGraphCard
-      v-if="datapoints.week"
       :initial-loading="initialLoading"
       :lines="datapoints.week"
       :updating="updating"
-      timeunit="hour"
-      title="Letze 24h"
+      timeunit="day"
+      title="Letze Woche"
       :class="{ kindle: small }"
     />
   </div>

@@ -1,8 +1,6 @@
 <template>
   <v-card class="mb-3">
-    <v-skeleton-loader v-if="initialLoading" class="mx-auto" type="card">
-    </v-skeleton-loader>
-
+    <v-skeleton-loader v-if="initialLoading" type="card"> </v-skeleton-loader>
     <LineGraph
       v-else
       :chart-data="chartData"

@@ -17,7 +17,7 @@
       </v-col>
       <v-spacer></v-spacer>
       <v-col cols="auto" class="pt-0">
-        <v-btn icon color="red" :disabled="updating" @click="getDataWrapper"
+        <v-btn icon color="red" @click="deleteLocalStorage"
           ><v-icon>mdi-delete</v-icon></v-btn
         >
       </v-col>
@@ -46,7 +46,6 @@ export default {
 
   async mounted() {
     this.devices = await this.$utils.getHostnamesFromFirebase()
-    console.log(this.devices)
     this.hostNames = this.devices.map((device) => device.value)
 
     for (const hostname of this.hostNames) {
@@ -74,6 +73,9 @@ export default {
           this.initialLoading = false
           this.updating = false
         })
+    },
+    deleteLocalStorage() {
+      this.$utils.deleteLocalStorage()
     },
   },
 }
