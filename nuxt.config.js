@@ -113,12 +113,12 @@ export default {
       if (isDev) {
         config.mode = 'development'
       }
-      config.module.rules.push({
-        enforce: 'pre',
-        test: /\.txt$/,
-        loader: 'raw-loader',
-        exclude: /(node_modules)/,
-      })
+      // config.module.rules.push({
+      //   enforce: 'pre',
+      //   test: /\.txt$/,
+      //   loader: 'raw-loader',
+      //   exclude: /(node_modules)/,
+      // })
     },
     analyze: false,
   },
