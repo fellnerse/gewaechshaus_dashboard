@@ -8,6 +8,7 @@
       :chart-data="chartData"
       :title="title"
       :timeunit="timeunit"
+      style="height: 100%"
     />
     <v-progress-circular
       v-if="updating && !initialLoading"
@@ -73,7 +74,7 @@ export default {
   position: absolute;
   left: 50%;
   top: 50%;
-  padding-left: -35px;
-  padding-top: -35px;
+  margin-left: -35px;
+  margin-top: -35px;
 }
 </style>

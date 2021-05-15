@@ -71,7 +71,14 @@ function getHostnamesFromFirebase({ $fire }) {
   return $fire.firestore
     .collection('/datapoints')
     .get()
-    .then((snapshot) => snapshot.docs.map((snap) => snap.id))
+    .then((snapshot) =>
+      snapshot.docs.map((snap) => {
+        return {
+          text: snap.data().name,
+          value: snap.id,
+        }
+      })
+    )
 }
 
 export default function utilsClient(context, inject) {

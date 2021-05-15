@@ -1,22 +1,26 @@
 <template>
   <v-container justify="center">
     <v-row align="center" justify="center">
-      <v-spacer></v-spacer>
       <v-col cols="auto" class="pt-0">
         <v-select
           v-model="espHostname"
-          :items="hostnames"
-          style="max-width: 75px"
+          :items="devices"
+          style="max-width: 200px"
           @change="switchEsp"
         >
         </v-select>
       </v-col>
       <v-col cols="auto" class="pt-0">
-        <v-btn elevation="0" :disabled="updating" @click="getDataWrapper"
+        <v-btn icon color="green" :disabled="updating" @click="getDataWrapper"
           ><v-icon>mdi-reload</v-icon></v-btn
         >
       </v-col>
       <v-spacer></v-spacer>
+      <v-col cols="auto" class="pt-0">
+        <v-btn icon color="red" :disabled="updating" @click="getDataWrapper"
+          ><v-icon>mdi-delete</v-icon></v-btn
+        >
+      </v-col>
     </v-row>
     <Graphs
       :datapoints="datapoints[espHostname]"
@@ -35,14 +39,17 @@ export default {
       updateInterval: 300000,
       updating: false,
       espHostname: 'esp0',
-      hostnames: [],
+      devices: [],
+      hostNames: [],
     }
   },
 
   async mounted() {
-    this.hostnames = await this.$utils.getHostnamesFromFirebase()
+    this.devices = await this.$utils.getHostnamesFromFirebase()
+    console.log(this.devices)
+    this.hostNames = this.devices.map((device) => device.value)
 
-    for (const hostname of this.hostnames) {
+    for (const hostname of this.hostNames) {
       this.datapoints[hostname] = this.$localStorage.loadESPData(hostname)
     }
     this.espHostname = this.$localStorage.getESPSelect()

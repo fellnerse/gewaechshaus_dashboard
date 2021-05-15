@@ -4,6 +4,7 @@
       :datapoints="datapoints"
       :initial-loading="initialLoading || !datapoints"
       :updating="updating"
+      :small="true"
     />
   </div>
 </template>

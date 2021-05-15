@@ -6,6 +6,7 @@
       :updating="updating"
       timeunit="minute"
       title="Letze Stunde"
+      :class="{ kindle: small }"
     />
     <v-spacer />
     <LineGraphCard
@@ -14,6 +15,7 @@
       :updating="updating"
       timeunit="hour"
       title="Letze 24h"
+      :class="{ kindle: small }"
     />
     <v-spacer />
     <LineGraphCard
@@ -23,6 +25,7 @@
       :updating="updating"
       timeunit="hour"
       title="Letze 24h"
+      :class="{ kindle: small }"
     />
   </div>
 </template>
@@ -33,6 +36,13 @@ export default {
     datapoints: { type: Object, default: () => {} },
     initialLoading: { type: Boolean, default: true },
     updating: { type: Boolean, default: true },
+    small: { type: Boolean, default: false },
   },
 }
 </script>
+
+<style scoped>
+.kindle {
+  height: 200px;
+}
+</style>
