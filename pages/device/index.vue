@@ -1,3 +1,7 @@
-<template>
-  <div class="h1">Grias di</div>
-</template>
+<script>
+export default {
+  middleware({ redirect }) {
+    return redirect('/device/esp1')
+  },
+}
+</script>

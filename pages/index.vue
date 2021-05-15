@@ -75,7 +75,7 @@ export default {
         })
     },
     deleteLocalStorage() {
-      this.$utils.deleteLocalStorage()
+      this.$localStorage.deleteLocalStorage()
     },
   },
 }
