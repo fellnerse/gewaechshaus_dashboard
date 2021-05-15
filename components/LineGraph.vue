@@ -18,6 +18,11 @@ export default {
       type: Object,
       default() {
         return {
+          animation: {
+            onComplete() {
+              document.dispatchEvent(new Event('graphLoaded'))
+            },
+          },
           pointHitRadius: 20,
           responsive: true,
           maintainAspectRatio: false,
