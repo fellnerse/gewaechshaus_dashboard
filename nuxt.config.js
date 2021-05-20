@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV !== 'production'
 
 export default {
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   router: {
     base,
@@ -43,6 +43,8 @@ export default {
     '~/plugins/utils.client.js',
   ],
 
+  serverMiddleware: ['~/graphql/index.js'],
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -57,7 +59,16 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@nuxtjs/firebase'],
+  modules: ['@nuxtjs/firebase', '@nuxtjs/apollo'],
+
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint: 'http://localhost:3001/graphql',
+      },
+    },
+  },
+
   firebase: {
     config: {
       apiKey: 'AIzaSyAGnyxgPpUy6AaPOSdQwvZHZGiTrABJBpY',
