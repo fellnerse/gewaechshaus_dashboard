@@ -2,22 +2,32 @@ import colors from 'vuetify/es5/util/colors'
 
 const base = '/gewaechshaus_dashboard'
 const isDev = process.env.NODE_ENV !== 'production'
+const port = process.env.PORT || 80
 
 export default {
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   router: {
     base,
   },
+
   static: {
     prefix: base,
+  },
+
+  axios: {
+    port,
+    prefix: base,
+    credentials: true,
   },
 
   publicRuntimeConfig: {
     base,
     isDev,
   },
+
+  serverMiddleware: ['~/api/index.js'],
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -57,7 +67,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@nuxtjs/firebase'],
+  modules: ['@nuxtjs/firebase', '@nuxtjs/axios'],
   firebase: {
     config: {
       apiKey: 'AIzaSyAGnyxgPpUy6AaPOSdQwvZHZGiTrABJBpY',
@@ -124,6 +134,6 @@ export default {
   },
   server: {
     host: '0.0.0.0',
-    port: 80,
+    port,
   },
 }

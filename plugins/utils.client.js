@@ -98,7 +98,6 @@ function getHostnameFromFirebase(name, { $fire }) {
     .doc(name)
     .get()
     .then((snapshot) => {
-      console.log(snapshot)
       return {
         text: snapshot.data().name,
         value: snapshot.id,
