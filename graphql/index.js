@@ -3,33 +3,40 @@ import { gql, ApolloServer } from 'apollo-server-express'
 
 const PORT = 3001
 
-console.log('hellooasfo2==?===?=')
-
-// const typeDefs2 = gql`
-//   type Book {
-//     title: String
-//     author: String
-//   }
-//   type Query {
-//     books: [Book]
-//   }
-// `
-
 const typeDefs = gql`
-  type Query {
-    hello: String
+  type Book {
+    title: String
+    author: String
   }
-
-  schema {
-    query: Query
+  type Query {
+    books: [Book]
   }
 `
 
+// const typeDefs = gql`
+//   type Query {
+//     hello: String
+//   }
+//
+//   schema {
+//     query: Query
+//   }
+// `
+
+const books = [
+  {
+    title: 'The Awakening',
+    author: 'Kate Chopin',
+  },
+  {
+    title: 'City of Glass',
+    author: 'Paul Auster',
+  },
+]
+
 const resolvers = {
   Query: {
-    hello(root, args, context) {
-      return 'Hello world!'
-    },
+    books: () => books,
   },
 }
 
@@ -60,4 +67,4 @@ app
     // }
   })
 
-console.log('this', app)
+console.log('this', this)

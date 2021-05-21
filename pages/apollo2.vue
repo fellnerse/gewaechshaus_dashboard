@@ -19,7 +19,9 @@ export default {
       this.$apollo.query({
         query: gql`
           {
-            hello
+            books {
+              title
+            }
           }
         `,
       })
