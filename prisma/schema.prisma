@@ -10,24 +10,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean  @default(false)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
-}
-
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
-}
-
 model Device {
   id       Int         @id @default(autoincrement())
   hostname String      @unique
@@ -36,11 +18,11 @@ model Device {
 }
 
 model Datapoint {
-  id          Int       @id @default(autoincrement())
-  date        DateTime? @default(now())
-  hostname    Device    @relation(fields: [deviceId], references: [id])
-  deviceId    Int
-  humidity    Float
-  light       Float
-  temperature Float
+  id                Int       @id @default(autoincrement())
+  date              DateTime? @default(now())
+  device            Device    @relation(fields: [deviceHostName], references: [hostname])
+  deviceHostName    String
+  humidity          Float
+  light             Float
+  temperature       Float
 }

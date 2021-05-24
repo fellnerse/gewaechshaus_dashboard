@@ -16,7 +16,7 @@ export default {
     }
   },
   async fetch() {
-    this.data = (await this.$axios.get('/device')).data
+    this.data = (await this.$axios.get('/device/mine2')).data
   },
   mounted() {},
   methods: {
@@ -26,15 +26,12 @@ export default {
         .then((a) => this.data.push(a.data))
     },
     addPost() {
-      this.$axios
-        .$post('/api/post', {
-          title: 'rando',
-          content: 'bliblablubb',
-          authorEmail: 'mine2',
-        })
-        .then((a) => {
-          this.$axios.put('/api/publish/' + a.id)
-        })
+      this.$axios.$post('/datapoint', {
+        hostname: 'mine2',
+        humidity: 1,
+        light: 1,
+        temperature: 1,
+      })
     },
   },
 }
