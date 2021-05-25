@@ -44,12 +44,9 @@ function getData({ dates, hostname, datapoints }, context) {
     const query = app.apolloProvider.defaultClient
       .query({
         query: gql`
-          query GetDatapointsInTimeRange(
-            $start: DateTime!
-            $hostname: String!
-          ) {
-            getDatapointsInTimeRange(
-              data: { start: $start, hostname: $hostname }
+          query datapoint($start: DateTime!, $hostname: String!) {
+            datapoint(
+              filter: { start: $start, hostname: $hostname }
               orderBy: { uploadedAt: asc }
             ) {
               temperature
@@ -65,12 +62,12 @@ function getData({ dates, hostname, datapoints }, context) {
         },
       })
       .then((queryResult) => {
-        queryResult.data.getDatapointsInTimeRange.forEach((datapoint) => {
+        queryResult.data.datapoint.forEach((datapoint) => {
           datapoint.date = new Date(datapoint.uploadedAt)
           datapoints[name].push(datapoint)
         })
 
-        const loadedItems = queryResult.data.getDatapointsInTimeRange.length
+        const loadedItems = queryResult.data.datapoint.length
         console.log(hostname + ' added ' + name + ': ' + loadedItems)
 
         // remove data that is too old -> so the graph does not grow,
