@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV !== 'production'
 
 export default {
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'server',
+  target: 'static',
 
   router: {
     base,
@@ -43,8 +43,6 @@ export default {
     '~/plugins/utils.client.js',
   ],
 
-  serverMiddleware: ['~/graphql/index.js'],
-
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -64,7 +62,7 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: 'http://localhost:3001/graphql',
+        httpEndpoint: 'http://192.168.178.254:4000/graphql',
       },
     },
   },

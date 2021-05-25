@@ -1,6 +1,9 @@
+import gql from 'graphql-tag'
+
 function biggerDate(a, b) {
   return a > b ? a : b
 }
+
 function getStartDates(hostname, { $localStorage }) {
   const dates = {}
 
@@ -34,32 +37,45 @@ function getStartDates(hostname, { $localStorage }) {
   return dates
 }
 
-function getData({ dates, hostname, datapoints }, { $fire, $localStorage }) {
+function getData({ dates, hostname, datapoints }, context) {
+  const { app, $localStorage } = context
   const promises = []
   for (const [name, date] of Object.entries(dates)) {
-    let query = $fire.firestore
-      .collection('datapoints/' + hostname + '/data')
-      .orderBy('date', 'desc')
-      .endBefore(date.load)
-      .startAt(new Date())
-
-    query = date.minuteRestriction(query)
-
-    query = query
-      .limit(3000)
-      .get()
-      .then((snapshot) => {
-        snapshot.docs.reverse().forEach((doc) => {
-          // add datapoint to correct list
-          const data = doc.data()
-          data.date = data.date.toDate()
-          datapoints[name].push(data)
+    const query = app.apolloProvider.defaultClient
+      .query({
+        query: gql`
+          query GetDatapointsInTimeRange(
+            $start: DateTime!
+            $hostname: String!
+          ) {
+            getDatapointsInTimeRange(
+              data: { start: $start, hostname: $hostname }
+              orderBy: { uploadedAt: asc }
+            ) {
+              temperature
+              humidity
+              light
+              uploadedAt
+            }
+          }
+        `,
+        variables: {
+          start: date.load,
+          hostname,
+        },
+      })
+      .then((queryResult) => {
+        queryResult.data.getDatapointsInTimeRange.forEach((datapoint) => {
+          datapoint.date = new Date(datapoint.uploadedAt)
+          datapoints[name].push(datapoint)
         })
-        console.log(hostname + ' added ' + name + ': ' + snapshot.docs.length)
+
+        const loadedItems = queryResult.data.getDatapointsInTimeRange.length
+        console.log(hostname + ' added ' + name + ': ' + loadedItems)
+
         // remove data that is too old -> so the graph does not grow,
         // but "slides"
-
-        if (snapshot.docs.length) {
+        if (loadedItems) {
           datapoints[name] = datapoints[name].filter((d) => {
             return d.date > date.start
           })
