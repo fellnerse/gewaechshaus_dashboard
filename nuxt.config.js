@@ -62,7 +62,7 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: 'http://192.168.178.254:4000/graphql',
+        httpEndpoint: 'https://gwächs.haus:4000/graphql',
       },
     },
   },
