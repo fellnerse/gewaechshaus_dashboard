@@ -18,6 +18,8 @@ export default {
       type: Object,
       default() {
         return {
+          parsing: false,
+          normalized: true,
           animation: {
             onComplete() {
               document.dispatchEvent(new Event('graphLoaded'))

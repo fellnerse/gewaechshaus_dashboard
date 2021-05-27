@@ -37,8 +37,7 @@ function getStartDates(hostname, { $localStorage }) {
   return dates
 }
 
-function getData({ dates, hostname, datapoints }, context) {
-  const { app, $localStorage } = context
+function getData({ dates, hostname, datapoints }, { app, $localStorage }) {
   const promises = []
   for (const [name, date] of Object.entries(dates)) {
     const query = app.apolloProvider.defaultClient
@@ -76,47 +75,56 @@ function getData({ dates, hostname, datapoints }, context) {
           datapoints[name] = datapoints[name].filter((d) => {
             return d.date > date.start
           })
-          $localStorage.setDate(
-            hostname,
-            name,
-            datapoints[name].slice(-1)[0].date
-          )
+          return { hostname, name, date: datapoints[name].slice(-1)[0].date }
         }
       })
 
     promises.push(query)
   }
-  return Promise.all(promises).then(() =>
-    $localStorage.setESPData(datapoints, hostname)
-  )
-}
-
-function getHostnamesFromFirebase({ $fire }) {
-  return $fire.firestore
-    .collection('/datapoints')
-    .get()
-    .then((snapshot) =>
-      snapshot.docs.map((snap) => {
-        return {
-          text: snap.data().name,
-          value: snap.id,
-        }
-      })
-    )
-}
-
-function getHostnameFromFirebase(name, { $fire }) {
-  return $fire.firestore
-    .collection('/datapoints')
-    .doc(name)
-    .get()
-    .then((snapshot) => {
-      console.log(snapshot)
-      return {
-        text: snapshot.data().name,
-        value: snapshot.id,
+  return Promise.all(promises).then((dates) => {
+    /* try {
+      $localStorage.setESPData(datapoints, hostname)
+      for (const x of dates) {
+        const { hostname, name, date } = x
+        $localStorage.setDate(hostname, name, date)
       }
+    } catch (e) {
+      console.log('No Space left')
+    } */
+  })
+}
+
+function getHostnamesFromFirebase({ app }) {
+  return app.apolloProvider.defaultClient
+    .query({
+      query: gql`
+        query {
+          device {
+            text: name
+            value: hostname
+          }
+        }
+      `,
     })
+    .then((data) => data.data.device)
+}
+
+function getHostnameFromFirebase(hostname, { app }) {
+  return app.apolloProvider.defaultClient
+    .query({
+      query: gql`
+        query device($hostname: String!) {
+          device(hostname: $hostname) {
+            text: name
+            value: hostname
+          }
+        }
+      `,
+      variables: {
+        hostname,
+      },
+    })
+    .then((data) => data.data.device)
 }
 
 export default function utilsClient(context, inject) {
