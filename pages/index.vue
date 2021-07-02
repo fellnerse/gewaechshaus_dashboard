@@ -35,10 +35,10 @@ export default {
   data() {
     return {
       initialLoading: true,
-      datapoints: { esp0: {} },
+      datapoints: {},
       updateInterval: 300000,
       updating: false,
-      espHostname: 'esp0',
+      espHostname: '',
       devices: [],
       hostNames: [],
     }
@@ -51,7 +51,10 @@ export default {
     for (const hostname of this.hostNames) {
       this.datapoints[hostname] = this.$localStorage.loadESPData(hostname)
     }
-    this.espHostname = this.$localStorage.getESPSelect()
+    this.espHostname =
+      this.$localStorage.getESPSelect() || this.hostNames[0] || ''
+    this.$localStorage.setESPSelect(this.espHostname)
+
     this.getDataWrapper()
   },
 

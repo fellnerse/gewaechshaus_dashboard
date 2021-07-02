@@ -57,37 +57,12 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@nuxtjs/firebase', '@nuxtjs/apollo'],
+  modules: ['@nuxtjs/apollo'],
 
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: 'https://data.gwächs.haus:4000/graphql',
-      },
-    },
-  },
-
-  firebase: {
-    config: {
-      apiKey: 'AIzaSyAGnyxgPpUy6AaPOSdQwvZHZGiTrABJBpY',
-      authDomain: 'gewaechshaus-f84e2.firebaseapp.com',
-      databaseURL:
-        'https://gewaechshaus-f84e2-default-rtdb.europe-west1.firebasedatabase.app',
-      projectId: 'gewaechshaus-f84e2',
-      storageBucket: 'gewaechshaus-f84e2.appspot.com',
-      messagingSenderId: '4693107437',
-      appId: '1:4693107437:web:6f7a15208a589a57d4a2e4',
-    },
-    services: {
-      firestore: {
-        memoryOnly: false, // default
-        chunkName: isDev ? 'firebase-auth' : '[id]', // default
-        enablePersistence: true,
-        // emulatorPort: process.env.NODE_ENV === 'development' ? 9090 : undefined,
-        emulatorPort: undefined,
-        settings: {
-          // Firestore Settings - currently only works in SPA mode
-        },
+        httpEndpoint: 'https://data2.gwächs.haus/graphql',
       },
     },
   },

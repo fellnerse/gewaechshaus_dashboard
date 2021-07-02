@@ -32,7 +32,7 @@ function setESPSelect(hostname) {
 }
 
 function getESPSelect() {
-  return localStorage.getItem('esp-select') || 'esp0'
+  return localStorage.getItem('esp-select')
 }
 
 function deleteLocalStorage() {

@@ -1,31 +1,33 @@
 <template>
   <div>
-    <LineGraphCard
-      :initial-loading="initialLoading"
-      :lines="datapoints.hour"
-      :updating="updating"
-      timeunit="minute"
-      title="Letze Stunde"
-      :class="{ kindle: small }"
-    />
-    <v-spacer />
-    <LineGraphCard
-      :initial-loading="initialLoading"
-      :lines="datapoints.day"
-      :updating="updating"
-      timeunit="hour"
-      title="Letzter Tag"
-      :class="{ kindle: small }"
-    />
-    <v-spacer />
-    <LineGraphCard
-      :initial-loading="initialLoading"
-      :lines="datapoints.week"
-      :updating="updating"
-      timeunit="day"
-      title="Letze Woche"
-      :class="{ kindle: small }"
-    />
+    <div v-if="datapoints">
+      <LineGraphCard
+        :initial-loading="initialLoading"
+        :lines="datapoints.hour"
+        :updating="updating"
+        timeunit="minute"
+        title="Letze Stunde"
+        :class="{ kindle: small }"
+      />
+      <v-spacer />
+      <LineGraphCard
+        :initial-loading="initialLoading"
+        :lines="datapoints.day"
+        :updating="updating"
+        timeunit="hour"
+        title="Letzter Tag"
+        :class="{ kindle: small }"
+      />
+      <v-spacer />
+      <LineGraphCard
+        :initial-loading="initialLoading"
+        :lines="datapoints.week"
+        :updating="updating"
+        timeunit="day"
+        title="Letze Woche"
+        :class="{ kindle: small }"
+      />
+    </div>
   </div>
 </template>
 <script>

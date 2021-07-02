@@ -13,7 +13,9 @@ function getStartDates(hostname, { $localStorage }) {
   dates.week = {
     start: weekStart,
     load: biggerDate(weekStart, weekLoad),
-    minuteRestriction: (query) => query.where('minute', 'in', [0]),
+    second: 1,
+    minute: 1,
+    hour: 24,
   }
 
   const dayStart = new Date(new Date() - 24 * 3600 * 1000)
@@ -22,7 +24,9 @@ function getStartDates(hostname, { $localStorage }) {
   dates.day = {
     start: dayStart,
     load: biggerDate(dayStart, dayLoad),
-    minuteRestriction: (query) => query.where('minute', 'in', [0, 15, 30, 45]),
+    second: 1,
+    minute: 4,
+    hour: 24,
   }
 
   const hourStart = new Date(new Date() - 3600 * 1000)
@@ -31,7 +35,9 @@ function getStartDates(hostname, { $localStorage }) {
   dates.hour = {
     start: hourStart,
     load: biggerDate(hourStart, hourLoad),
-    minuteRestriction: (_) => _,
+    second: 1,
+    minute: 60,
+    hour: 24,
   }
 
   return dates
@@ -43,9 +49,21 @@ function getData({ dates, hostname, datapoints }, { app, $localStorage }) {
     const query = app.apolloProvider.defaultClient
       .query({
         query: gql`
-          query datapoint($start: DateTime!, $hostname: String!) {
+          query datapoint(
+            $start: DateTime!
+            $hostname: String!
+            $second: Int!
+            $minute: Int!
+            $hour: Int!
+          ) {
             datapoint(
-              filter: { start: $start, hostname: $hostname }
+              filter: {
+                start: $start
+                hostname: $hostname
+                second: $second
+                minute: $minute
+                hour: $hour
+              }
               orderBy: { uploadedAt: asc }
             ) {
               temperature
@@ -57,6 +75,9 @@ function getData({ dates, hostname, datapoints }, { app, $localStorage }) {
         `,
         variables: {
           start: date.load,
+          second: date.second,
+          minute: date.minute,
+          hour: date.hour,
           hostname,
         },
       })
@@ -82,7 +103,7 @@ function getData({ dates, hostname, datapoints }, { app, $localStorage }) {
     promises.push(query)
   }
   return Promise.all(promises).then((dates) => {
-    /* try {
+    try {
       $localStorage.setESPData(datapoints, hostname)
       for (const x of dates) {
         const { hostname, name, date } = x
@@ -90,7 +111,7 @@ function getData({ dates, hostname, datapoints }, { app, $localStorage }) {
       }
     } catch (e) {
       console.log('No Space left')
-    } */
+    }
   })
 }
 
@@ -124,7 +145,7 @@ function getHostnameFromFirebase(hostname, { app }) {
         hostname,
       },
     })
-    .then((data) => data.data.device)
+    .then((data) => data.data.device[0])
 }
 
 export default function utilsClient(context, inject) {
