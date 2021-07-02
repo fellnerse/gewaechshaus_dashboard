@@ -1,6 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
 
-const base = '/gewaechshaus_dashboard'
+const base = '/'
 const isDev = process.env.NODE_ENV !== 'production'
 
 export default {
