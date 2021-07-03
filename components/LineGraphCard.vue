@@ -5,6 +5,7 @@
       v-else
       :chart-data="chartData"
       :title="title"
+      :color="$vuetify.theme.currentTheme.secondary"
       :timeunit="timeunit"
       style="height: 100%"
     />
@@ -27,6 +28,7 @@ export default {
     updating: { type: Boolean },
     title: { type: String, default: '' },
     timeunit: { type: String, default: '' },
+    greyscale: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -41,14 +43,14 @@ export default {
           {
             data: this.lines.map((line) => line.humidity),
             label: 'Luftfeuchte in %',
-            borderColor: 'black',
+            borderColor: this.greyscale ? 'black' : '#348899',
             fill: false,
             pointRadius: 1,
           },
           {
             data: this.lines.map((line) => line.temperature),
             label: 'Temperatur in °C',
-            borderColor: 'black',
+            borderColor: this.greyscale ? 'black' : '#962D3E',
             borderDash: [10, 5],
             fill: false,
             pointRadius: 1,
@@ -56,7 +58,7 @@ export default {
           {
             data: this.lines.map((line) => line.light),
             label: 'Light in 💡',
-            borderColor: 'black',
+            borderColor: this.greyscale ? 'black' : '#F2EBC7',
             borderDash: [5, 5],
             fill: false,
             pointRadius: 1,

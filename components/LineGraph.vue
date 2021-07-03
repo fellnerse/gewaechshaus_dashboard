@@ -1,7 +1,6 @@
 <script>
 import { Line, mixins } from 'vue-chartjs'
 const { reactiveProp } = mixins
-const color = 'black'
 export default {
   extends: Line,
   mixins: [reactiveProp],
@@ -13,6 +12,10 @@ export default {
     timeunit: {
       type: String,
       default: '',
+    },
+    color: {
+      type: String,
+      default: 'white',
     },
     options: {
       type: Object,
@@ -35,15 +38,15 @@ export default {
           legend: {
             position: 'bottom',
             display: true,
-            color,
+            color: this.color,
             labels: {
-              fontColor: color,
+              fontColor: this.color,
             },
           },
           title: {
             display: this.title.length > 0,
             text: this.title,
-            fontColor: color,
+            fontColor: this.color,
             fontSize: 20,
           },
           scales: {
@@ -63,10 +66,10 @@ export default {
                 },
                 gridLines: {
                   display: false,
-                  color,
+                  color: this.color,
                 },
                 ticks: {
-                  fontColor: color,
+                  fontColor: this.color,
                   source: 'auto',
                 },
               },
@@ -79,7 +82,11 @@ export default {
                 ticks: {
                   precision: 0,
                   beginAtZero: false,
-                  fontColor: color,
+                  fontColor: this.color,
+                },
+                gridLines: {
+                  display: true,
+                  color: this.color + 80,
                 },
               },
             ],
@@ -93,6 +100,7 @@ export default {
       },
     },
   },
+
   mounted() {
     this.renderChart(this.chartData, this.options)
   },

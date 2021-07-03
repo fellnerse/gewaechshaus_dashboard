@@ -7,6 +7,7 @@
         :updating="updating"
         timeunit="minute"
         title="Letze Stunde"
+        :greyscale="small"
         :class="{ kindle: small }"
       />
       <v-spacer />
@@ -16,6 +17,7 @@
         :updating="updating"
         timeunit="hour"
         title="Letzter Tag"
+        :greyscale="small"
         :class="{ kindle: small }"
       />
       <v-spacer />
@@ -25,6 +27,7 @@
         :updating="updating"
         timeunit="day"
         title="Letze Woche"
+        :greyscale="small"
         :class="{ kindle: small }"
       />
     </div>

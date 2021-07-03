@@ -30,6 +30,7 @@ export default {
   },
 
   mounted() {
+    this.$vuetify.theme.dark = false
     this.datapoints = this.$localStorage.loadESPData(this.hostname)
     this.$utils
       .getHostnameFromFirebase(this.hostname)

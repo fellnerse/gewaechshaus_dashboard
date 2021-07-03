@@ -22,7 +22,12 @@
         >
       </v-col>
     </v-row>
-    <LineGraphCard :lines="liveData" timeunit="second" title="Live" />
+    <LineGraphCard
+      :updating="liveData.length <= 1"
+      :lines="liveData"
+      timeunit="second"
+      title="Live"
+    />
     <Graphs
       :datapoints="datapoints[espHostname]"
       :initial-loading="initialLoading"
@@ -33,7 +38,6 @@
 
 <script>
 import gql from 'graphql-tag'
-// const SUBSCRIPTION_ONLINE_USERS =
 export default {
   data() {
     return {
