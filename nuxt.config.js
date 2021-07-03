@@ -63,6 +63,7 @@ export default {
     clientConfigs: {
       default: {
         httpEndpoint: 'https://data2.gwächs.haus/graphql',
+        wsEndpoint: 'wss://data2.gwächs.haus/subscriptions',
       },
     },
   },

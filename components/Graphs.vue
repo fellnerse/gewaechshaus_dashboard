@@ -35,6 +35,7 @@ export default {
   name: 'Graphs',
   props: {
     datapoints: { type: Object, default: () => {} },
+    liveData: { type: Array, default: () => [] },
     initialLoading: { type: Boolean, default: true },
     updating: { type: Boolean, default: true },
     small: { type: Boolean, default: false },

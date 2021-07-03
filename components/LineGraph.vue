@@ -28,6 +28,9 @@ export default {
           pointHitRadius: 20,
           responsive: true,
           maintainAspectRatio: false,
+          aspectRatio: 10,
+          height: 20000,
+          width: 20,
           lineTension: 0,
           legend: {
             position: 'bottom',
@@ -97,19 +100,7 @@ export default {
 </script>
 
 <style>
-.chartWrapper {
-  position: relative;
-}
-
-.chartWrapper > canvas {
-  position: absolute;
-  left: 0;
-  top: 0;
-  pointer-events: none;
-}
-
-.chartAreaWrapper {
-  width: 600px;
-  overflow-x: scroll;
+canvas {
+  height: 27vmax !important;
 }
 </style>

@@ -22,6 +22,7 @@
         >
       </v-col>
     </v-row>
+    <LineGraphCard :lines="liveData" timeunit="second" title="Live" />
     <Graphs
       :datapoints="datapoints[espHostname]"
       :initial-loading="initialLoading"
@@ -31,6 +32,8 @@
 </template>
 
 <script>
+import gql from 'graphql-tag'
+// const SUBSCRIPTION_ONLINE_USERS =
 export default {
   data() {
     return {
@@ -41,6 +44,7 @@ export default {
       espHostname: '',
       devices: [],
       hostNames: [],
+      liveData: [],
     }
   },
 
@@ -56,12 +60,15 @@ export default {
     this.$localStorage.setESPSelect(this.espHostname)
 
     this.getDataWrapper()
+    this.subscribe(this.espHostname)
   },
 
   methods: {
     switchEsp() {
       this.$localStorage.setESPSelect(this.espHostname)
       this.getDataWrapper()
+      this.liveData = []
+      this.subscribe(this.espHostname)
     },
     getDataWrapper() {
       if (this.updating) return
@@ -79,6 +86,29 @@ export default {
     },
     deleteLocalStorage() {
       this.$localStorage.deleteLocalStorage()
+    },
+    subscribe(hostname) {
+      const subscription = this.$apollo.subscribe({
+        query: gql`
+          subscription datapoint($hostname: String!) {
+            datapoint(hostname: $hostname) {
+              humidity
+              temperature
+              light
+              uploadedAt
+            }
+          }
+        `,
+        variables: {
+          hostname,
+        },
+      })
+      subscription.subscribe({
+        next: ({ data }) => {
+          data.datapoint.date = new Date(data.datapoint.uploadedAt)
+          this.liveData.push(data.datapoint)
+        },
+      })
     },
   },
 }
